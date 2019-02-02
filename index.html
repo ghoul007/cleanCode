@@ -27,6 +27,7 @@
 	<div class="reveal">
 		<div class="slides">
 
+			<!-- Clean Variable -->
 
 			<section>
 				<h1>CLEAN CODE (JS)</h1>
@@ -128,12 +129,229 @@ export class Customer {
 	}
  </code> </pre>
 			</section>
+			<!-- end clean variable -->
 
-			<!-- TIP5 -->
-			<!-- <section>
-				<h5>variable names should be memorable</h5>
-				<pre> <code> </code> </pre>
-			</section> -->
+
+			<!--begin: lexical Scope and let -->
+
+			<!-- TIP1 -->
+			<section>
+				<h5>Always favor Strict Mode</h5>
+				<h5>Use let instead of var</h5>
+			</section>
+			<!-- end: lexical Scope and let -->
+
+
+			<!-- begin: Clean function -->
+			<!-- TIP1 -->
+			<section>
+				<h5>Single responsibility</h5>
+				<pre>
+					<code>
+function prepareData(items) {
+	for (let i = 0; i < items.length; i++) {
+		items[i].id = i + 1;
+	}
+
+
+	let boughtItems = [];
+	for (let i = 0; i < items.length; i++) {
+		if (items[i].bought) {
+			boughtItems.push(items[i]);
+		}
+	}
+
+	let totalCost = 0;
+	for (let i = 0; i < items.length; i++) {
+		totalCost += items[i].price;
+	}
+	console.log(`Total Cost: ${totalCost}`);
+}
+											</code></pre>
+
+			</section>
+
+
+			<section>
+				<h5>Single responsibility</h5>
+				<pre>
+												<code>
+function prepareData(items) {
+	addIds(items);
+	let boughtItems = getBoughtItems(items);
+	let totalCost = computeTotalCost(boughtItems);
+	console.log(`Total Cost: ${totalCost}`);
+}
+
+function addIds(items) {
+
+}
+
+function getBoughtItems(items) {
+
+}
+
+function computeTotalCost(items) {
+
+}
+				</code>
+			</pre>
+			</section>
+
+
+			<section>
+				<h5>Reduce number of arguments</h5>
+				<pre><code>
+function draw(element, width, height, backgroundColor, color ) {
+	element.style.width = width;
+	element.style.height = height;
+	element.style.backgroundColor = backgroundColor;
+	element.style.color = color;
+	//Do something else to draw the shape
+	//.......
+	return element;
+}
+				</code></pre>
+				<pre><code>
+function draw(element, config) {
+	element.style.width = config.width;
+	element.style.height = config.height;
+	element.style.backgroundColor = config.backgroundColor;
+	element.style.color = config.color;
+	//Do something else to draw the shape
+	//.......
+	return element;
+}
+				</code></pre>
+			</section>
+
+
+			<section>
+				<h5>Avoid a callbacks</h5>
+				<pre><code>
+function getSensorAData(cb) {
+	setTimeout(() => {
+		cb({
+			min: 8, 
+			max: 118
+		});
+	}, 2000);
+}
+
+function getSensorBData(cb) {
+	setTimeout(() => {
+		cb({
+			temp: 78,
+			value: 26
+		});
+	}, 500);
+}
+
+function getSensorCData(cb) {
+	setTimeout(() => {
+		cb({
+			min: 14,
+			max: 92,
+			temp: 64,
+			value: 12
+		});
+	}, 2000)
+}
+
+function combineSensorData() {
+	getSensorAData((sensorAData) => {
+		console.log("Sensor A Data: ", sensorAData);
+		
+		getSensorBData(sensorBData => {
+			console.log("Sensor B Data: ", sensorBData);
+
+			getSensorCData(sensorCData => {
+				console.log("Sensor C Data: ", sensorCData);
+
+				//Do some computation with sensor data
+			})
+		});
+	});
+}
+				</code></pre>
+			</section>
+
+
+<section>
+	<h5>Avoid callback</h5>
+	<pre><code>
+function getSensorAData() {
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			resolve({
+				min: 8, 
+				max: 118
+			});
+		}, 2000);
+	})
+}
+
+function getSensorBData() {
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			resolve({
+				temp: 78,
+				value: 26
+			});
+		}, 500);
+	});
+}
+
+function getSensorCData() {
+	return new Promise((resolve, reject) => {
+		setTimeout(() => {
+			resolve({
+				min: 14,
+				max: 92,
+				temp: 64,
+				value: 12
+			});
+		}, 2000)
+	});
+}
+
+function combineSensorData() {
+	Promise.all(getSensorAData(), getSensorBData(), getSensorCData()).then(results => {
+		let sensorAData = results[0];
+		let sensorBData = results[1];
+		let sensorCData = results[2];
+	});
+}
+	</code></pre>
+</section>
+
+
+
+<section>
+	<h5>Use Object.assign or the spred operator for default argumanets</h5>
+	<pre><code>
+function draw(element, config) {
+	let defaults = {
+		width: 200,
+		height: 200,
+		margin: 28,
+		padding: 14
+	};
+	// config = Object.assign(defaults, config);
+	config = {
+		...defaults,
+		...config       //WARNING: config must come second!!
+	}
+	console.log(config);
+}
+	</code></pre>
+</section>
+
+			<!-- end: Clean function -->
+
+
+
+
 
 
 		</div>
