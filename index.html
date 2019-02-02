@@ -277,9 +277,9 @@ function combineSensorData() {
 			</section>
 
 
-<section>
-	<h5>Avoid callback</h5>
-	<pre><code>
+			<section>
+				<h5>Avoid callback</h5>
+				<pre><code>
 function getSensorAData() {
 	return new Promise((resolve, reject) => {
 		setTimeout(() => {
@@ -323,13 +323,13 @@ function combineSensorData() {
 	});
 }
 	</code></pre>
-</section>
+			</section>
 
 
 
-<section>
-	<h5>Use Object.assign or the spred operator for default argumanets</h5>
-	<pre><code>
+			<section>
+				<h5>Use Object.assign or the spred operator for default argumanets</h5>
+				<pre><code>
 function draw(element, config) {
 	let defaults = {
 		width: 200,
@@ -345,7 +345,7 @@ function draw(element, config) {
 	console.log(config);
 }
 	</code></pre>
-</section>
+			</section>
 
 			<!-- end: Clean function -->
 
@@ -371,8 +371,7 @@ test();
 
 obj.test = test;
 obj.test()
-				</code></pre>
-				result = 92, 1
+				</code></pre> result = 92, 1
 
 			</section>
 
@@ -395,8 +394,7 @@ test();
 
 obj.test = test;
 obj.test()
-				</code></pre>
-				result = undefined, 1
+				</code></pre> result = undefined, 1
 
 			</section>
 
@@ -419,8 +417,7 @@ function test() {
 
 test.call(obj);
 test.apply(obj);
-				</code></pre>
-				result =1, 1
+				</code></pre> result =1, 1
 			</section>
 
 
@@ -443,8 +440,7 @@ function callMeLater(cb) {
 	}, 3000);
 }
 callMeLater(test.bind(obj));
-				</code></pre>
-				=> .bind() does not call the function
+				</code></pre> => .bind() does not call the function
 			</section>
 
 			<section>
@@ -463,6 +459,79 @@ console.log(p);
 				</code></pre>
 			</section>
 			<!-- end: about this -->
+
+			<!-- begin: clean objects and classes-->
+			<section>
+				<h5>Use property description to create read only fields</h5>
+				<pre><code>
+"use strict"
+
+var person = {
+	firstName: 'John',
+	lastName: 'Smith'
+};
+
+Object.defineProperty(person, 'age', {
+	value: 28,
+	writable: false,
+	enumerable: true,
+	configurable: false
+});
+
+console.log(person);
+person.age = 44;
+console.log(person);
+				</code></pre> result = {firstName: 'John',lastName: 'Smith',age:28} {firstName: 'John',lastName: 'Smith',age:28} (with strict mode)
+				canot assign to read only property 'age' of object
+			</section>
+
+
+			<section>
+				<h5>inheritance </h5>
+				<pre><code>
+class Pet {
+	constructor(name) {
+		this.name = name;
+	}
+	eat() {
+		console.log(`${this.name} is eating....`);
+	}
+}
+class Dog extends Pet {
+	constructor(name, breed) {
+		super(name);
+		this.breed = breed;
+	}   
+	play() {
+		console.log(`${this.name} is playing...`);
+	}
+}
+let max = new Dog("Max", "Golden Retriever");
+max.eat();
+max.play();
+console.log(max);
+				</code></pre>
+			</section>
+
+
+			<section>
+				<h5>use Object.freeze instead of const</h5>
+				<pre><code>
+"use strict"
+
+const config = {
+	fbApiKey: 'snfa9f7yh43f30j03t4hg34',
+	googleApiKey: '4jhu954htgh39g343g',
+	linkedInApiKey: 'jo2045349jnfinl3436787'
+};
+
+Object.freeze(config);
+console.log(config);
+config.googleApiKey = "";
+console.log(config);
+				</code></pre> result = typeError: Assignment to constant variable
+			</section>
+			<!-- end: clean objects and classes -->
 
 
 
