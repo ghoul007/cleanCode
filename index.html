@@ -350,6 +350,105 @@ function draw(element, config) {
 			<!-- end: Clean function -->
 
 
+			<!-- begin: about this -->
+
+			<section>
+				<h5>variable declared with var are part of the global object</h5>
+				<pre><code>
+var a = 92;
+
+var obj = {
+	a: 1,
+	b: 2, 
+	c: 3
+}
+
+function test() {
+	console.log(this.a);
+}
+
+test();
+
+obj.test = test;
+obj.test()
+				</code></pre>
+				result = 92, 1
+
+			</section>
+
+			<section>
+				<h5>variable declared with let are not part of the global object</h5>
+				<pre><code>
+ let a = 92;
+
+var obj = {
+	a: 1,
+	b: 2, 
+	c: 3
+}
+
+function test() {
+	console.log(this.a);
+}
+
+test();
+
+obj.test = test;
+obj.test()
+				</code></pre>
+				result = undefined, 1
+
+			</section>
+
+
+			<section>
+				<h5>Apply and Call</h5>
+				<pre><code>
+
+var a = 92;
+
+var obj = {
+	a: 1,
+	b: 2, 
+	c: 3
+}
+
+function test() {
+	console.log(this.a);
+}
+
+test.call(obj);
+test.apply(obj);
+				</code></pre>
+				result =1, 1
+			</section>
+
+
+			<section>
+				<h5>hard Bind</h5>
+				<pre><code>
+var obj = {
+	a: 1,
+	b: 2, 
+	c: 3
+}
+function test() {
+	console.log(this.a);
+	console.log(this.b);
+	console.log(this.c);
+}
+function callMeLater(cb) {
+	setTimeout(()=> {
+		cb();
+	}, 3000);
+}
+callMeLater(test.bind(obj));
+				</code></pre>
+				=> .bind() does not call the function
+			</section>
+			<!-- end: about this -->
+
+
 
 
 
