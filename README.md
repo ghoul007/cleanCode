@@ -1,4 +1,3 @@
-# JavaScript Quiz
+# Clean Code in JS
 
-[presentation] (https://ghoul007.github.io/JSQuiz/)
 
