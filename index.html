@@ -533,10 +533,260 @@ console.log(config);
 			</section>
 			<!-- end: clean objects and classes -->
 
+<!-- begin: pure function -->
+<section>
+	<h5>unpure function</h5>
+	<pre><code>
+class ProfileManager {
+constructor(user) {
+	this.user = user;
+	this.profileUrl ="";
+	this.username= "";
+	this.domain="https://ghoul.com"
+}
+createUsername() {
+	let random =  Math.floor(Math.random()*1000000);
+	this.username = `${user.firstName}.${user.lastName}.${random}`;
+}
+createProfileUrl() {
+	this.profileUrl=  `${this.domain}${this.username}`;
+}
+}
+let user = {
+id: 7685, firstName: 'John', lastName: 'Smith'
+};
+let manager = new ProfileManager(user);
+manager.createUsername();
+manager.createProfileUrl();
+	</code></pre>
+</section>
+
+<section>
+	<h5>pure function</h5>
+	<pre><code>
+			class ProfileManager {
+				constructor(user) {
+					this.user = user;
+				}
+				createUsername(user) {
+					return `${user.firstName}.${user.lastName}.${user.id}`;
+				}
+				createProfileUrl(domain, username) {
+					return  `${domain}${username}`;
+				}
+			}
+			let user = {
+				id: 7685, firstName: 'John', lastName: 'Smith'
+			};
+			let manager = new ProfileManager(user);
+			let profileUrl = manager.createProfileUrl("https://ghoul.com", createUsername(user));	
+	</code></pre>
+</section>
+<!-- end: pure function -->
+
+<!-- begin Object.assign and the spread operator -->
+<section>
+	<h5>Side Effects</h5>
+	<pre><code>
+let readings = {
+	coreTemp: 74,
+	additionalTemp: 80,
+	readingA: 178,
+	readingB: 120,
+	readingC: -190
+}
+
+function adjustReadings(readings) {
+	readings.readingA -= 20;
+	readings.readingB += readings.coreTemp/2;
+	return readings;
+}
+console.log("Readings before: ", readings);
+	adjustReadings(readings);
+console.log("Readings after: ", readings);
+	</code></pre>
+	=> readings is change
+</section>
+
+<section>
+	<h5>Sol: Spread Operator</h5>
+	<pre><code>
+let readings = {
+	coreTemp: 74,
+	additionalTemp: 80,
+	readingA: 178,
+	readingB: 120,
+	readingC: -190
+}
+
+function adjustReadings(readings) {
+	readings.readingA -= 20;
+	readings.readingB += readings.coreTemp/2;
+	return readings;
+}
+
+function testReadingA(readingA) {
+	return readingA >= 170;
+}
+
+console.log("Readings before: ", readings);
+cont res =	adjustReadings({...readings});
+console.log(res);
+console.log("Readings after: ", readings);
+	</code></pre>
+	=> readings is not change
+</section>
+
+
+<section>
+	<h5>Sol: Object.assign</h5>
+	<pre><code>
+let readings = {
+	coreTemp: 74,
+	additionalTemp: 80,
+	readingA: 178,
+	readingB: 120,
+	readingC: -190
+}
+
+function adjustReadings(readings) {
+	readings.readingA -= 20;
+	readings.readingB += readings.coreTemp/2;
+	return readings;
+}
+
+function testReadingA(readingA) {
+	return readingA >= 170;
+}
+
+console.log("Readings before: ", readings);
+cont res =	adjustReadings({...readings});
+console.log(res);
+console.log("Readings after: ", readings);
+	</code></pre>
+	=> readings is not change
+</section>
+<!-- end: Object.assign and the spread operator -->
 
 
 
+<!-- begin: Map and ForEach -->
+<section>
+	<h5>side Effect with loop</h5>
+	<pre><code>
+	let todos = [
+	{ task: 'Buy eggs', completed: false },
+	{ task: 'Feed the dog', completed: true },
+	{ task: 'Study for the exam', completed: true },
+	{ task: 'Cook dinner', completed: false }
+];
 
+function makePending(todos) {
+	 for(let i=0; i<todos.length; i++) {
+	     todos[i].completed = false;
+	 }
+}
+
+console.log(todos);
+makePending(todos);
+console.log(todos);
+	</code></pre>
+	result same all {completed: false}
+</section>
+
+
+<section>
+	<h5>sol1: Array.prototype.foreach </h5>
+	<pre><code>
+	let todos = [
+	{ task: 'Buy eggs', completed: false },
+	{ task: 'Feed the dog', completed: true },
+	{ task: 'Study for the exam', completed: true },
+	{ task: 'Cook dinner', completed: false }
+];
+
+function makePending(todos) {
+    todos.forEach((todo, index) => {
+        todo.completed = false
+    });
+}
+
+console.log(todos);
+makePending(todos);
+console.log(todos);
+	</code></pre>
+
+</section>
+
+<section>
+	<h5>sol1: Array.prototype.map </h5>
+	<pre><code>
+	let todos = [
+	{ task: 'Buy eggs', completed: false },
+	{ task: 'Feed the dog', completed: true },
+	{ task: 'Study for the exam', completed: true },
+	{ task: 'Cook dinner', completed: false }
+];
+
+function identify(todos) {
+	return todos.map((todo, index) => {
+		return {
+			...todo,
+			id: index + 1
+		}
+	});
+}
+
+console.log("Todos before: ", todos);
+let identified = identify(todos);
+console.log("Todos after: ", identified);
+	</code></pre>
+
+</section>
+<!-- end: Map and ForEach -->
+
+
+<!-- begin: Reducin Array -->
+<section>
+	<h5>reduce example</h5>
+	<pre><code>
+	let numbers = [
+	2, 9, 8, 7, 6
+];
+function numbersSum(numbers) {
+	return numbers.reduce((accumulator, current) => {
+		if(isEven(current)) {
+			return accumulator + current / 2;
+		}
+		else {
+			return accumulator + current;
+		}
+	}, 0);
+}
+function isEven(num) {
+	return (num % 2 == 0);
+}
+console.log(numbersSum(numbers));
+	</code></pre>
+</section>
+<!-- end: Reducin Array -->
+
+<!-- begin: filter array -->
+<section>
+	<h5>example with filter method</h5>
+	<pre><code>
+	let numbers = [
+	6, 8, 3, 14, 1, 9, 10
+];
+
+function getEvenNumbers(numbers) {
+	return numbers.filter(num => num % 2 == 0);
+}
+
+console.log(getEvenNumbers(numbers));
+	</code></pre>
+</section>
+<!-- end: filter array -->
 
 		</div>
 	</div>
