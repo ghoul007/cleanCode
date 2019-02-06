@@ -533,148 +533,171 @@ console.log(config);
 			</section>
 			<!-- end: clean objects and classes -->
 
-<!-- begin: pure function -->
-<section>
-	<h5>unpure function</h5>
-	<pre><code>
-class ProfileManager {
-constructor(user) {
-	this.user = user;
-	this.profileUrl ="";
-	this.username= "";
-	this.domain="https://ghoul.com"
-}
-createUsername() {
-	let random =  Math.floor(Math.random()*1000000);
-	this.username = `${user.firstName}.${user.lastName}.${random}`;
-}
-createProfileUrl() {
-	this.profileUrl=  `${this.domain}${this.username}`;
-}
-}
-let user = {
-id: 7685, firstName: 'John', lastName: 'Smith'
-};
-let manager = new ProfileManager(user);
-manager.createUsername();
-manager.createProfileUrl();
-	</code></pre>
-</section>
+			<!-- begin: pure function -->
+			<section>
+				<h5>unpure function</h5>
+				<pre><code>
+	class ProfileManager {
+	constructor(user) {
+		this.user = user;
+		this.profileUrl ="";
+		this.username= "";
+		this.domain="https://ghoul.com"
+	}
+	createUsername() {
+		let random =  Math.floor(Math.random()*1000000);
+		this.username = `${user.firstName}.${user.lastName}.${random}`;
+	}
+	createProfileUrl() {
+		this.profileUrl=  `${this.domain}${this.username}`;
+	}
+	}
+	let user = {
+	id: 7685, firstName: 'John', lastName: 'Smith'
+	};
+	let manager = new ProfileManager(user);
+	manager.createUsername();
+	manager.createProfileUrl();
+		</code></pre>
+			</section>
 
-<section>
-	<h5>pure function</h5>
-	<pre><code>
-			class ProfileManager {
-				constructor(user) {
-					this.user = user;
+			<section>
+				<h5>pure function</h5>
+				<pre><code>
+				class ProfileManager {
+					constructor(user) {
+						this.user = user;
+					}
+					createUsername(user) {
+						return `${user.firstName}.${user.lastName}.${user.id}`;
+					}
+					createProfileUrl(domain, username) {
+						return  `${domain}${username}`;
+					}
 				}
-				createUsername(user) {
-					return `${user.firstName}.${user.lastName}.${user.id}`;
-				}
-				createProfileUrl(domain, username) {
-					return  `${domain}${username}`;
-				}
-			}
-			let user = {
-				id: 7685, firstName: 'John', lastName: 'Smith'
-			};
-			let manager = new ProfileManager(user);
-			let profileUrl = manager.createProfileUrl("https://ghoul.com", createUsername(user));	
-	</code></pre>
-</section>
-<!-- end: pure function -->
+				let user = {
+					id: 7685, firstName: 'John', lastName: 'Smith'
+				};
+				let manager = new ProfileManager(user);
+				let profileUrl = manager.createProfileUrl("https://ghoul.com", createUsername(user));	
+		</code></pre>
+			</section>
+			<!-- end: pure function -->
 
-<!-- begin Object.assign and the spread operator -->
-<section>
-	<h5>Side Effects</h5>
-	<pre><code>
-let readings = {
-	coreTemp: 74,
-	additionalTemp: 80,
-	readingA: 178,
-	readingB: 120,
-	readingC: -190
+			<!-- begin Object.assign and the spread operator -->
+			<section>
+				<h5>Side Effects</h5>
+				<pre><code>
+	let readings = {
+		coreTemp: 74,
+		additionalTemp: 80,
+		readingA: 178,
+		readingB: 120,
+		readingC: -190
+	}
+	
+	function adjustReadings(readings) {
+		readings.readingA -= 20;
+		readings.readingB += readings.coreTemp/2;
+		return readings;
+	}
+	console.log("Readings before: ", readings);
+		adjustReadings(readings);
+	console.log("Readings after: ", readings);
+		</code></pre> => readings is change
+			</section>
+
+			<section>
+				<h5>Sol: Spread Operator</h5>
+				<pre><code>
+	let readings = {
+		coreTemp: 74,
+		additionalTemp: 80,
+		readingA: 178,
+		readingB: 120,
+		readingC: -190
+	}
+	
+	function adjustReadings(readings) {
+		readings.readingA -= 20;
+		readings.readingB += readings.coreTemp/2;
+		return readings;
+	}
+	
+	function testReadingA(readingA) {
+		return readingA >= 170;
+	}
+	
+	console.log("Readings before: ", readings);
+	cont res =	adjustReadings({...readings});
+	console.log(res);
+	console.log("Readings after: ", readings);
+		</code></pre> => readings is not change
+			</section>
+
+
+			<section>
+				<h5>Sol: Object.assign</h5>
+				<pre><code>
+	let readings = {
+		coreTemp: 74,
+		additionalTemp: 80,
+		readingA: 178,
+		readingB: 120,
+		readingC: -190
+	}
+	
+	function adjustReadings(readings) {
+		readings.readingA -= 20;
+		readings.readingB += readings.coreTemp/2;
+		return readings;
+	}
+	
+	function testReadingA(readingA) {
+		return readingA >= 170;
+	}
+	
+	console.log("Readings before: ", readings);
+	cont res =	adjustReadings({...readings});
+	console.log(res);
+	console.log("Readings after: ", readings);
+		</code></pre> => readings is not change
+			</section>
+			<!-- end: Object.assign and the spread operator -->
+
+
+
+			<!-- begin: Map and ForEach -->
+			<section>
+				<h5>side Effect with loop</h5>
+				<pre><code>
+let todos = [
+{ task: 'Buy eggs', completed: false },
+{ task: 'Feed the dog', completed: true },
+{ task: 'Study for the exam', completed: true },
+{ task: 'Cook dinner', completed: false }
+];
+makePending = (todos) =>{
+for(let i=0; i<todos.length; i++) {
+	todos[i].completed = false;
+}
 }
 
-function adjustReadings(readings) {
-	readings.readingA -= 20;
-	readings.readingB += readings.coreTemp/2;
-	return readings;
-}
-console.log("Readings before: ", readings);
-	adjustReadings(readings);
-console.log("Readings after: ", readings);
-	</code></pre>
-	=> readings is change
-</section>
-
-<section>
-	<h5>Sol: Spread Operator</h5>
-	<pre><code>
-let readings = {
-	coreTemp: 74,
-	additionalTemp: 80,
-	readingA: 178,
-	readingB: 120,
-	readingC: -190
-}
-
-function adjustReadings(readings) {
-	readings.readingA -= 20;
-	readings.readingB += readings.coreTemp/2;
-	return readings;
-}
-
-function testReadingA(readingA) {
-	return readingA >= 170;
-}
-
-console.log("Readings before: ", readings);
-cont res =	adjustReadings({...readings});
-console.log(res);
-console.log("Readings after: ", readings);
-	</code></pre>
-	=> readings is not change
-</section>
-
-
-<section>
-	<h5>Sol: Object.assign</h5>
-	<pre><code>
-let readings = {
-	coreTemp: 74,
-	additionalTemp: 80,
-	readingA: 178,
-	readingB: 120,
-	readingC: -190
-}
-
-function adjustReadings(readings) {
-	readings.readingA -= 20;
-	readings.readingB += readings.coreTemp/2;
-	return readings;
-}
-
-function testReadingA(readingA) {
-	return readingA >= 170;
-}
-
-console.log("Readings before: ", readings);
-cont res =	adjustReadings({...readings});
-console.log(res);
-console.log("Readings after: ", readings);
-	</code></pre>
-	=> readings is not change
-</section>
-<!-- end: Object.assign and the spread operator -->
+console.log(todos);
+makePending(todos);
+console.log(todos);
+</>
+	</code></pre> result same all {completed: false}
+			</section>
 
 
 
-<!-- begin: Map and ForEach -->
-<section>
-	<h5>side Effect with loop</h5>
-	<pre><code>
-	let todos = [
+
+
+			<section>
+				<h5>sol1: Array.prototype.foreach </h5>
+				<pre><code>
+let todos = [
 	{ task: 'Buy eggs', completed: false },
 	{ task: 'Feed the dog', completed: true },
 	{ task: 'Study for the exam', completed: true },
@@ -682,46 +705,22 @@ console.log("Readings after: ", readings);
 ];
 
 function makePending(todos) {
-	 for(let i=0; i<todos.length; i++) {
-	     todos[i].completed = false;
-	 }
+	todos.forEach((todo, index) => {
+		todo.completed = false
+	});
 }
 
 console.log(todos);
 makePending(todos);
 console.log(todos);
-	</code></pre>
-	result same all {completed: false}
-</section>
+			</code></pre>
 
+			</section>
 
-<section>
-	<h5>sol1: Array.prototype.foreach </h5>
-	<pre><code>
-	let todos = [
-	{ task: 'Buy eggs', completed: false },
-	{ task: 'Feed the dog', completed: true },
-	{ task: 'Study for the exam', completed: true },
-	{ task: 'Cook dinner', completed: false }
-];
-
-function makePending(todos) {
-    todos.forEach((todo, index) => {
-        todo.completed = false
-    });
-}
-
-console.log(todos);
-makePending(todos);
-console.log(todos);
-	</code></pre>
-
-</section>
-
-<section>
-	<h5>sol1: Array.prototype.map </h5>
-	<pre><code>
-	let todos = [
+			<section>
+				<h5>sol1: Array.prototype.map </h5>
+				<pre><code>
+let todos = [
 	{ task: 'Buy eggs', completed: false },
 	{ task: 'Feed the dog', completed: true },
 	{ task: 'Study for the exam', completed: true },
@@ -740,17 +739,17 @@ function identify(todos) {
 console.log("Todos before: ", todos);
 let identified = identify(todos);
 console.log("Todos after: ", identified);
-	</code></pre>
+			</code></pre>
 
-</section>
-<!-- end: Map and ForEach -->
+			</section>
+			<!-- end: Map and ForEach -->
 
 
-<!-- begin: Reducin Array -->
-<section>
-	<h5>reduce example</h5>
-	<pre><code>
-	let numbers = [
+			<!-- begin: Reducin Array -->
+			<section>
+				<h5>reduce example</h5>
+				<pre><code>
+let numbers = [
 	2, 9, 8, 7, 6
 ];
 function numbersSum(numbers) {
@@ -767,14 +766,14 @@ function isEven(num) {
 	return (num % 2 == 0);
 }
 console.log(numbersSum(numbers));
-	</code></pre>
-</section>
-<!-- end: Reducin Array -->
+			</code></pre>
+			</section>
+			<!-- end: Reducin Array -->
 
-<!-- begin: filter array -->
-<section>
-	<h5>example with filter method</h5>
-	<pre><code>
+			<!-- begin: filter array -->
+			<section>
+				<h5>example with filter method</h5>
+				<pre><code>
 	let numbers = [
 	6, 8, 3, 14, 1, 9, 10
 ];
@@ -784,9 +783,374 @@ function getEvenNumbers(numbers) {
 }
 
 console.log(getEvenNumbers(numbers));
-	</code></pre>
-</section>
-<!-- end: filter array -->
+			</code></pre>
+			</section>
+			<!-- end: filter array -->
+
+
+
+			<!-- begin:  Module -->
+			<section>
+				<h5>why Module</h5>
+
+				- Code organization - Namespacing - Dependency Trees
+			</section>
+			<section>
+				<h5>why Module</h5>
+
+				<pre><code>
+class A {
+	doThing() {
+		console.log("A.doThing");
+		this.b.doThing();
+	}
+}
+a.doThing();
+
+class B {
+	doThing() {
+		console.log("B.doThing");
+	}
+}
+var b = new B();
+b.doThing();
+
+class C {
+	doThing() {
+		console.log("C.doThing");
+	}
+}
+var c = new C();
+c.doThing();
+		</code></pre>
+			</section>
+
+
+			<section>
+				<h5>Class A</h5>
+
+				<pre><code>
+
+class A {
+	doThing() {
+		console.log("A.doThing");
+	}
+}
+var a = new A();
+a.doThing();
+
+
+		</code></pre>
+			</section>
+
+			<section>
+				<h5>Class B</h5>
+
+				<pre><code>
+
+class B {
+	doThing() {
+		console.log("B.doThing");
+	}
+}
+var b = new B();
+b.doThing();
+
+
+		</code></pre>
+			</section>
+			<section>
+				<h5>Class C</h5>
+
+				<pre><code>
+
+class C {
+	doThing() {
+		console.log("C.doThing");
+	}
+}
+var c = new C();
+c.doThing();
+
+
+		</code></pre>
+			</section>
+
+
+			<section>
+				<h5>Dependency Injection</h5>
+
+				<pre><code>
+
+class A {
+	constructor(b) {
+		this.b = b;
+	}
+
+	doThing() {
+		console.log("A.doThing");
+		this.b.doThing();
+	}
+}
+var a = new A(new B());
+a.doThing();
+
+		</code></pre>
+			</section>
+
+			<section>
+				<h5>Dependency Tree</h5>
+
+				<pre><code>
+
+<body>
+	<div class="container">
+		<script src="b.js"></script>
+		<script src="a.js"></script>
+		<script src="c.js"></script>
+	</div>
+</body>
+
+		</code></pre> B executed first
+			</section>
+
+
+			<!-- end:  Module -->
+
+
+			<!--begin:  the module Pattern -->
+			<section>
+				<h5>module Pattern</h5>
+				<pre><code>
+function ModuleLoader() {
+	var modules = {};
+
+	function getInstance(name) {
+		debugger
+		if (modules[name]) {
+			return modules[name]
+		}
+		else {
+			throw new Error(`undefined module: ${name}`)
+		}
+	}
+
+	function define(name, dependencies, instance) {
+		debugger
+		if (modules[name]) {
+			throw new Error(`Module ${name} already defined`)
+		}
+		else {
+			var depInstances = dependencies.map(
+				(dep) => {
+					return getInstance(dep)
+				}
+			)
+			modules[name] = instance.apply(instance, depInstances)
+		}
+	}
+
+	return {
+		getInstance,
+		define
+	}
+
+}
+
+var loader = ModuleLoader();
+
+loader.define('HttpClient', [], function HttpClient() {
+	function get(url) {
+		debugger
+		return fetch(url).then(res => res.json())
+	}
+	return { get }
+})
+loader.define('PostManager', ['HttpClient'], function PostManager(httpClient) {
+	function getPost(url) {
+		debugger
+		httpClient.get(url).then(posts => console.log(posts))
+	}
+	return { getPost }
+})
+
+
+let postManager = loader.getInstance('PostManager')
+postManager.getPost('https://jsonplaceholder.typicode.com/posts');
+
+			</code></pre>
+			</section>
+			<!--end:  the module Pattern -->
+
+			<section>
+				<h5>CommonJS (synchronous)</h5>
+				<div style="height: 80vh!important; overflow: auto;">
+
+					<pre><code>
+const Person = require('./person');
+const { greet, printPerson } = require('./utilities');
+
+let p = new Person("John", "Smith", 42);
+printPerson(p);
+greet(p);
+		</code></pre>
+					<pre><code>
+class Person {
+	constructor(firstName, lastName, age) {
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.age = age;
+	}
+}
+module.exports = Person;
+		</code></pre>
+					<pre><code>
+function printPerson(p) {
+	console.log(`${p.firstName} ${p.lastName} - ${p.age}`);
+}
+function greet(p) {
+	console.log(`Hello, I'm ${p.firstName}`);
+}
+module.exports = {
+	printPerson: printPerson,
+	greet: greet
+}
+		</code></pre>
+				</div>
+			</section>
+
+			<!--begin AMD (Asynchronous Module Definition) -->
+			<section>
+				<h5>AMD (Asynchronous Module Definition)</h5>
+				<pre><code>
+define("http-client", [], function HttpClient() {
+	return {
+		get: function(url) {
+			return fetch(url).then(response => response.json());
+		}
+	}
+});
+				</code></pre>
+				<pre><code>
+define("post-manager", ["http-client"], function PostManager(httpClient) {
+	const url = "https://jsonplaceholder.typicode.com/posts";
+	return {
+		printPosts: function() {
+			httpClient.get(url).then(posts => {
+				console.log("Posts: ", posts);
+			})
+		}
+	}
+})
+			</section>
+
+			<section>
+				<h5>AMD (Asynchronous Module Definition)</h5>
+			</code></pre>
+				<pre><code>
+require(["post-manager"], function(postManager) {
+	postManager.printPosts();
+})
+console.log(define)
+			</code></pre>
+				<pre><code>
+module.exports = {
+	entry: './app.js',
+	output: {
+		filename: 'bundle.js'
+	},
+	resolve: { modules: [__dirname] }
+}
+					</code>
+					</pre>
+				<pre><code>
+<script src="./dist/bundle.js"></script>
+				</code>
+					</pre>
+			</section>
+			<!--end AMD (Asynchronous Module Definition) -->
+
+
+
+
+
+
+
+
+
+			<!--begin AMD (Asynchronous Module Definition) -->
+			<section>
+				<h5>Injection Dependency ES6</h5>
+				<pre><code>
+export class HttpClient {
+	get(url) {
+		return fetch(url).then(response => response.json());
+	}
+}
+				</code></pre>
+				<pre><code>
+import { POSTS_ENDPOINT } from './config';
+export class PostManager {
+	constructor(httpClient) {
+		this.httpClient = httpClient;
+	}
+
+	printPosts() {
+		this.httpClient.get(POSTS_ENDPOINT).then(posts => {
+			console.log("Posts: ", posts);
+		})
+	}
+}
+			</section>
+
+			<section>
+					<h5>Injection Dependency ES6</h5>
+			</code></pre>
+				<pre><code>
+import { HttpClient } from './http-client';
+import { PostManager } from './post-manager';
+let postManager = new PostManager(new HttpClient());
+postManager.printPosts();
+			</code></pre>
+				<pre><code>
+module.exports = {
+	entry: './app.js',
+	output: {
+		filename: 'bundle.js'
+	},
+	resolve: {
+		modules: [__dirname]
+	}
+}
+					</code>
+					</pre>
+			</section>
+			<!--end AMD (Asynchronous Module Definition) -->
+
+
+			<!--begin webpack tree-Shaking webpack -->
+			<section>
+				<h5>Tree-Shaking with webpack</h5>
+				<pre><code>
+const uglifyjs = require('uglifyjs-webpack-plugin');
+
+module.exports = {
+	entry: 'app.js',
+	output: {
+		filename: 'bundle.js'
+	},
+	resolve: {
+		modules: [__dirname]
+	},
+	plugins: [
+		new uglifyjs({
+			
+		})
+	]
+}
+				</code></pre>
+			</section>
+			<!--end webpack tree-Shaking webpack -->
 
 		</div>
 	</div>
